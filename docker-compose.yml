@@ -2,7 +2,7 @@ version: "3"
 
 services:
   mirror:
-    image: verdaccio/verdaccio:4
+    image: verdaccio/verdaccio:4.3.4
     restart: always
     ports:
       - "4873:4873"
@@ -33,6 +33,22 @@ services:
       - "./downloader/downloader.py:/downloader.py"
     networks:
       internet: {}
+
+  pusher:
+    depends_on:
+      - mirror
+    build:
+      context: ./pusher
+    volumes:
+      - "./packages:/packages"
+      - "./package.json:/package.json"
+      - "./pusher/pusher.py:/pusher.py"
+    environment:
+      - NPM_USERNAME=default
+      - NPM_PASSWORD=default
+      - NPM_EMAIL=default@example.com
+    networks:
+      noinet: {}
 
 # To make sure 'client' is offline
 networks:

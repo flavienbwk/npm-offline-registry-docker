@@ -12,8 +12,6 @@ RUN apt-get install npm -y
 
 RUN mkdir /workdir
 
-RUN apt-get install iputils-ping -y
-
 WORKDIR /workdir
 COPY ./package.json /workdir/package.json
 

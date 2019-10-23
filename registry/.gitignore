@@ -1,2 +1,2 @@
 storage/*
-conf/*
+conf/.htpasswd
