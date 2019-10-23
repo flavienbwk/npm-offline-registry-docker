@@ -8,12 +8,15 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update -y
 RUN apt-get -o Dpkg::Options::="--force-overwrite" install yarn -y
 
+RUN apt-get install npm -y
+
 RUN mkdir /workdir
+
+RUN apt-get install iputils-ping -y
 
 WORKDIR /workdir
 COPY ./package.json /workdir/package.json
 
-RUN apt-get install iputils-ping -y
 COPY ./entrypoint.sh /workdir/entrypoint.sh
 
 ENTRYPOINT [ "/workdir/entrypoint.sh" ]

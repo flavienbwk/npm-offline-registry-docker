@@ -2,13 +2,14 @@ version: "3"
 
 services:
   mirror:
-    tty: true
-    build:
-      context: .
+    image: verdaccio/verdaccio:4
+    restart: always
     ports:
-      - "92:80"
+      - "4873:4873"
     volumes:
-      - "./mirror/packages:/var/www/mirror/packages"
+        - "./registry/storage:/verdaccio/storage"
+        - "./registry/conf:/verdaccio/conf"
+        - "./registry/conf/.htpasswd:/verdaccio/conf/htpasswd"
     networks:
       internet: {}
       noinet: {}
@@ -20,6 +21,18 @@ services:
       context: ./client
     networks:
       noinet: {}
+
+  downloader:
+    depends_on:
+      - mirror
+    build:
+      context: ./downloader
+    volumes:
+      - "./packages:/packages"
+      - "./package.json:/package.json"
+      - "./downloader/downloader.py:/downloader.py"
+    networks:
+      internet: {}
 
 # To make sure 'client' is offline
 networks:
