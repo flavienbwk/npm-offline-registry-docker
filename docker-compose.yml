@@ -43,10 +43,6 @@ services:
       - "./packages:/packages"
       - "./package.json:/package.json"
       - "./pusher/pusher.py:/pusher.py"
-    environment:
-      - NPM_USERNAME=default
-      - NPM_PASSWORD=default
-      - NPM_EMAIL=default@example.com
     networks:
       noinet: {}
 

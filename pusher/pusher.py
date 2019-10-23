@@ -36,10 +36,9 @@ for archive in files:
     filename = os.path.basename(archive)[:-4]
     untared_path = untar_path + "/" + filename
     untar_command = "tar -xzf " + archive + " -C " + untared_path
-    publish_command = "npm publish --registry " + registry_url
+    publish_command = "npm publish --registry " + registry_url + " --force  "
     print("> Processing " + archive + " in " + untared_path)
     mkdir_p(untared_path)
     os.system(untar_command)
-    os.system("cat " + untared_path + "/package/package.json")
     os.chdir(untared_path + "/package")
     os.system(publish_command)
