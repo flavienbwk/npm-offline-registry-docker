@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  mirror:
+    tty: true
+    build:
+      context: .
+    ports:
+      - "92:80"
+    volumes:
+      - "./mirror/packages:/var/www/mirror/packages"
+    networks:
+      internet: {}
+      noinet: {}
+
+  client:
+    depends_on:
+      - mirror
+    build:
+      context: ./client
+    networks:
+      noinet: {}
+
+# To make sure 'client' is offline
+networks:
+  internet:
+    driver: bridge
+  noinet:
+    internal: true
