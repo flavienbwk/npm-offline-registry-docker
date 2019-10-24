@@ -2,9 +2,5 @@
 
 cd /workdir
 
-yarn config set registry http://localhost:4873
-
-yarn install
-yarn add mime-types
-
-cat package.json
+yarn config set registry http://mirror:4873
+yarn global add react
