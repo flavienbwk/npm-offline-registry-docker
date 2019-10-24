@@ -12,7 +12,6 @@ services:
         - "./registry/conf/.htpasswd:/verdaccio/conf/htpasswd"
     networks:
       internet: {}
-      noinet: {}
 
   client:
     depends_on:

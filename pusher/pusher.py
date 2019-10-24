@@ -36,7 +36,7 @@ for archive in files:
     filename = os.path.basename(archive)[:-4]
     untared_path = untar_path + "/" + filename
     untar_command = "tar -xzf " + archive + " -C " + untared_path
-    publish_command = "npm publish --registry " + registry_url + " --force  "
+    publish_command = "npm publish --registry " + registry_url
     print("> Processing " + archive + " in " + untared_path)
     mkdir_p(untared_path)
     os.system(untar_command)
