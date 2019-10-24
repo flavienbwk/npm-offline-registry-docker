@@ -13,7 +13,6 @@ RUN apt-get install npm -y
 RUN mkdir /workdir
 
 WORKDIR /workdir
-COPY ./package.json /workdir/package.json
 
 COPY ./entrypoint.sh /workdir/entrypoint.sh
 
