@@ -21,6 +21,14 @@ docker-compose restart mirror
 
 To remove a user, just remove its line in `registry/conf/htpasswd` and restart the `mirror` container
 
+### Starting the registry !
+
+Just execute :
+
+```
+docker-compose up -d mirror
+```
+
 ### Downloading your dependencies (online :zap:)
 
 You just have to **place the `/package.json` of the project** you want to get the packages from, **at the root of the directory**.
