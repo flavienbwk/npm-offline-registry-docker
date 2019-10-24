@@ -11,6 +11,8 @@ services:
         - "./registry/conf:/verdaccio/conf"
         - "./registry/conf/.htpasswd:/verdaccio/conf/htpasswd"
     networks:
+      # "internet" to be accessible from the host
+      # but host can have no internet access.
       internet: {}
 
   client:
@@ -31,6 +33,7 @@ services:
       - "./package.json:/package.json"
       - "./downloader/downloader.py:/downloader.py"
     networks:
+      # Internet required here on the host.
       internet: {}
 
   pusher:
