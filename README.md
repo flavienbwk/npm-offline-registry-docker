@@ -1,10 +1,10 @@
-# yarn-offline-mirror-docker
+# YARN / NPM Offline Registry Mirror
 
 Dockerized Yarn / NPM / PNPM offline mirror / registry to host your dependencies.
 
 ## Getting started
 
-### Setting up credentials for registry (offline)
+### Setting up credentials for registry (offline :electric_plug:)
 
 In order for you to be able to **push** packages on the registry, you need to create a user account.  
 The default credentials are : username `default` and password `default`.
@@ -21,10 +21,46 @@ docker-compose restart mirror
 
 To remove a user, just remove its line in `registry/conf/htpasswd` and restart the `mirror` container
 
-### Downloading your dependencies (online)
+### Downloading your dependencies (online :zap:)
 
-### Pushing your dependencies to your local registry (offline)
+You just have to **place the `/package.json` of the project** you want to get the packages from, **at the root of the directory**.
 
-### Testing if everything works (offline)
+The script that downloads the packages downloads as well the dependencies of each package (and their dependencies... and so on).
 
-### Installing your offline client (offline)
+Then, just run :
+
+```
+docker-compose up --build downloader
+```
+
+### Pushing your dependencies to your local registry (offline :electric_plug:)
+
+This script will look into the `/packages` directory for `.tgz` package files downloaded from the _downloader_ script or from the archives you've added.
+
+Just run :
+
+```
+docker-compose up --build pusher
+```
+
+### Testing if everything works (offline :electric_plug:)
+
+You can check your registry installation with the _client_ script that will `yarn add` a package from the registry.
+
+You can choose which package(s) to `yarn add` inside `/client/entrypoint.sh`.
+
+Then, just run :
+
+```
+docker-compose up --build client
+```
+
+### Installing your offline client (offline :electric_plug:)
+
+This one is not about Docker. Here is the command to configure any NPM/Yarn client on your network to download packages from your local registry only :
+
+- `yarn config set registry http://localhost:4873`
+
+OR
+
+- `npm config set registry http://localhost:4873`
