@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+  mirror:
+    image: verdaccio/verdaccio:4.3.4
+    restart: always
+    ports:
+      - "4873:4873"
+    volumes:
+        - "./registry/storage:/verdaccio/storage"
+        - "./registry/conf:/verdaccio/conf"
+        - "./registry/conf/.htpasswd:/verdaccio/conf/htpasswd"
+    networks:
+      internet: {}
+
+  client:
+    depends_on:
+      - mirror
+    build:
+      context: ./client
+    networks:
+      noinet: {}
+
+  downloader:
+    depends_on:
+      - mirror
+    build:
+      context: ./downloader
+    volumes:
+      - "./packages:/packages"
+      - "./package.json:/package.json"
+      - "./downloader/downloader.py:/downloader.py"
+    networks:
+      internet: {}
+
+  pusher:
+    depends_on:
+      - mirror
+    build:
+      context: ./pusher
+    volumes:
+      - "./packages:/packages"
+      - "./package.json:/package.json"
+      - "./pusher/pusher.py:/pusher.py"
+    networks:
+      noinet: {}
+
+# To make sure 'client' is offline
+networks:
+  internet:
+    driver: bridge
+  noinet:
+    internal: true
