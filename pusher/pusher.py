@@ -5,10 +5,16 @@ import os
 from os import path
 import glob
 import errno
+import time
+import requests
 
-download_path = "/packages"
-untar_path = "/untared-packages"
-registry_url = "http://mirror:4873"
+START_TIME = time.time()
+DOWNLOAD_PATH = "/packages"
+UNTAR_PATH = "/untared-packages"
+REGISTRY_URL = "http://mirror:4873"
+PUBLISH_COMMAND = "npm publish --registry " + REGISTRY_URL
+PACKAGES_CACHE = True
+PACKAGES = {}
 
 
 def repeat_to_length(string_to_expand, length):
@@ -27,35 +33,104 @@ def mkdir_p(path):
             raise
 
 
+# Will parse the Verdaccio's API to find
+# already pushed packages.
+def generate_cache_from_mirror():
+    headers = {'Content-Type': 'application/json'}
+    try:
+        response = requests.get(REGISTRY_URL + '/-/verdaccio/packages', headers=headers)
+        packages = response.json()
+        if packages:
+            for package in packages:
+                if "name" in package and "version" in package:
+                    set_cached_package(package["name"], package["version"])
+        else:
+            return False
+    except Exception as ex:
+        print(ex)
+        return False
+    return True
+
+
+
+# Returns True if the package is already installed
+# and False if it is not.
+def set_cached_package(package_name, package_version):
+    if package_name in PACKAGES:
+        if package_version not in PACKAGES[package_name]:
+            PACKAGES[package_name].append(package_version)
+    else:
+        PACKAGES[package_name] = [package_version]
+
+
+def is_package_cached(package_name, package_version):
+    return (package_name in PACKAGES and package_version in PACKAGES[package_name])
+
+
 def install_modules(package_directory, recursive=0):
-    publish_command = "npm publish --registry " + registry_url
-    if os.path.exists(package_directory + "/node_modules"):
-        for module_dir in os.listdir(package_directory + "/node_modules"):
-            module_path = package_directory + "/node_modules/" + module_dir
-            print(repeat_to_length("\t", recursive + 1) + "> FOUND " + module_dir)
-            install_modules(module_path, recursive + 1)
-    print(repeat_to_length("\t", recursive) + "> Pushing " + package_directory)
-    os.chdir(package_directory)
-    os.system(publish_command)
+    if (path.exists(package_directory + "/package.json")):
+        if os.path.exists(package_directory + "/node_modules"):
+            for module_dir in os.listdir(package_directory + "/node_modules"):
+                module_path = package_directory + "/node_modules/" + module_dir
+                print(repeat_to_length("\t", recursive + 1) + "> FOUND " + module_dir)
+                install_modules(module_path, recursive + 1)
+        if PACKAGES_CACHE:
+            # Using the cache system
+            # Must consider the fact package directories with same name
+            # can include different versions.
+            with open(package_directory + "/package.json", 'r') as file_content:
+                content = file_content.read()
+            if content:
+                json_content = json.loads(content)
+                if json_content:
+                    if "name" in json_content and "version" in json_content:
+                        if is_package_cached(json_content["name"], json_content["version"]) == False:
+                            set_cached_package(json_content["name"], json_content["version"])
+                            print(repeat_to_length("\t", recursive) + "> Pushing " + package_directory)
+                            os.chdir(package_directory)
+                            os.system(PUBLISH_COMMAND)
+                        else:
+                            print(repeat_to_length("\t", recursive) + "> Cached " + package_directory)
+                    else:
+                        print(repeat_to_length("\t", recursive) + "> Invalid " + package_directory)
+        else:
+            os.chdir(package_directory)
+            os.system(PUBLISH_COMMAND)
+    else:
+        # Some packages like @babel or @types may be
+        # nested in subdirectories.
+        for module_dir in os.listdir(package_directory):
+            module_path = package_directory + "/" + module_dir
+            if (path.exists(module_path + "/package.json")):
+                install_modules(module_path, recursive + 1)
     return
 
-if not path.exists(download_path) or not os.path.isdir(download_path):
-    print("Download path '" + download_path +
-          "' was not found or is not a directory")
-    exit(1)
-os.chdir(download_path)
+if PACKAGES_CACHE:
+    cached = generate_cache_from_mirror()
+    if not cached:
+        print("Failed to cache from mirror API.")
+    else:
+        print("Using cache : yes !")
 
-files = glob.glob(download_path + "/*.tgz")
+if not path.exists(DOWNLOAD_PATH) or not os.path.isdir(DOWNLOAD_PATH):
+    print("Download path '" + DOWNLOAD_PATH +
+            "' was not found or is not a directory")
+    exit(1)
+os.chdir(DOWNLOAD_PATH)
+
+files = glob.glob(DOWNLOAD_PATH + "/*.tgz")
 if len(files) <= 0:
-    print(download_path + "' does not contain any file")
+    print(DOWNLOAD_PATH + "' does not contain any file")
     exit(0)
 
 for archive in files:
     filename = os.path.basename(archive)[:-4]
-    untared_path = untar_path + "/" + filename
+    untared_path = UNTAR_PATH + "/" + filename
     untar_command = "tar -xzf " + archive + " -C " + untared_path
     print("> Processing " + archive + " in " + untared_path)
     mkdir_p(untared_path)
     os.system(untar_command)
     os.chdir(untared_path + "/package")
     install_modules(untared_path + "/package", 0)
+    
+print("\n--- Executed in %s seconds ---" % (time.time() - START_TIME))
