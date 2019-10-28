@@ -13,6 +13,9 @@
 # path to a directory with all packages
 storage: /verdaccio/storage
 
+publish:
+  allow_offline: true
+
 auth:
   htpasswd:
     file: /verdaccio/conf/htpasswd
