@@ -2,3 +2,4 @@ packages/*.tgz
 packages/*.log
 packages/.npmbundle
 test/
+.npmignore

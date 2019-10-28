@@ -38,7 +38,7 @@ The script that downloads the packages downloads as well the dependencies of eac
 Then, just run :
 
 ```
-docker-compose up --build downloader
+docker-compose up --build download
 ```
 
 ### Pushing your dependencies to your local registry (offline :electric_plug:)
@@ -48,19 +48,19 @@ This script will look into the `/packages` directory for `.tgz` package files do
 Just run :
 
 ```
-docker-compose up --build pusher
+docker-compose up --build push
 ```
 
 ### Testing if everything works (offline :electric_plug:)
 
-You can check your registry installation with the _client_ script that will `yarn add` a package from the registry.
+You can check your registry installation with the _test_ script that will `yarn add` a package from the registry.
 
-You can choose which package(s) to `yarn add` inside `/client/entrypoint.sh`.
+You can choose which package(s) to `yarn add` inside `/tester/entrypoint.sh`.
 
 Then, just run :
 
 ```
-docker-compose up --build client
+docker-compose up --build test
 ```
 
 ### Installing your offline client (offline :electric_plug:)

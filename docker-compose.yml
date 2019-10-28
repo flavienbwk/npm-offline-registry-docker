@@ -15,18 +15,20 @@ services:
       # "internet" to be accessible from the host
       # but host can have no internet access.
       internet: {}
-      # For "client" to be able to reach this container.
+      # For "test" to be able to reach this container.
       noinet: {}
 
-  client:
+  test:
     depends_on:
       - mirror
     build:
-      context: ./client
+      context: ./tester
+    volumes:
+      - "./package.json:/workdir/package.json"
     networks:
       noinet: {}
 
-  downloader:
+  download:
     depends_on:
       - mirror
     build:
@@ -39,7 +41,7 @@ services:
       # Internet required here on the host.
       internet: {}
 
-  pusher:
+  push:
     depends_on:
       - mirror
     build:
