@@ -23,6 +23,8 @@ services:
       - mirror
     build:
       context: ./tester
+    volumes:
+      - "./package.json:/workdir/package.json"
     networks:
       noinet: {}
 

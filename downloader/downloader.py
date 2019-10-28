@@ -50,4 +50,4 @@ for dependency, version in dependencies.items():
     dep_version = dependency + "@" + version
     command = "npm-bundle " + dep_version
     print("> " + dep_version)
-    run_command(command, 120)
+    run_command(command, 3600)

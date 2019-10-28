@@ -1,13 +1,25 @@
 {
-  "description": "Example package.json file. In reality, the script will only get the 'dependencies' array.",
-  "dependencies": {
-    "bootstrap": "^4.3.1",
-    "json-loader": "^0.5.7",
-    "react": "^16.11.0",
-    "react-bootstrap": "^1.0.0-beta.14",
-    "react-dom": "^16.11.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0",
-    "styled-components": "^4.4.0"
-  }
+    "name":"Some package example",
+    "version": "0.1",
+    "description": "Example package.json file. In reality, the script will only get the 'dependencies' array.",
+    "dependencies": {
+        "bootstrap": "^4.3.1",
+        "json-loader": "^0.5.7",
+        "react": "^16.11.0",
+        "react-bootstrap": "^1.0.0-beta.14",
+        "react-dom": "^16.11.0",
+        "react-router-dom": "^5.1.2",
+        "react-scripts": "3.2.0",
+        "styled-components": "^4.4.0"
+    },
+    "bundledDependencies": [
+        "bootstrap",
+        "json-loader",
+        "react",
+        "react-bootstrap",
+        "react-dom",
+        "react-router-dom",
+        "react-scripts",
+        "styled-components"
+    ]
 }
