@@ -3,3 +3,4 @@ packages/*.log
 packages/.npmbundle
 test/
 .npmignore
+package.json
