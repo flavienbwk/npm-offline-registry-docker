@@ -67,6 +67,23 @@ def is_package_cached(package_name, package_version):
     return (package_name in PACKAGES and package_version in PACKAGES[package_name])
 
 
+# Handling the fact a registry can be hard-coded in
+# the 'publishConfig' option : removing it
+# OR
+# that 'scripts._prepublish' might be defined, running
+# scripts with dev-dependencies, not downloaded by
+# npm-bundle.
+def set_offline_settings(json_content):
+    modified = False
+    if "scripts" in json_content and "_prepublish" in json_content["scripts"]:
+        modified = True
+        json_content["scripts"].pop("_prepublish", None)
+    if "publishConfig" in json_content and "registry" in json_content["publishConfig"]:
+        modified = True
+        json_content["publishConfig"].pop("registry", None)
+    return modified
+
+
 def install_modules(package_directory, recursive=0):
     if (path.exists(package_directory + "/package.json")):
         if os.path.exists(package_directory + "/node_modules"):
@@ -74,15 +91,20 @@ def install_modules(package_directory, recursive=0):
                 module_path = package_directory + "/node_modules/" + module_dir
                 print(repeat_to_length("\t", recursive + 1) + "> FOUND " + module_dir)
                 install_modules(module_path, recursive + 1)
-        if PACKAGES_CACHE:
-            # Using the cache system
-            # Must consider the fact package directories with same name
-            # can include different versions.
-            with open(package_directory + "/package.json", 'r') as file_content:
-                content = file_content.read()
-            if content:
-                json_content = json.loads(content)
-                if json_content:
+        with open(package_directory + "/package.json", 'r') as file_content:
+            content = file_content.read()
+        file_content.close()
+        if content:
+            json_content = json.loads(content)
+            if json_content:
+                if (set_offline_settings(json_content)):
+                    with open(package_directory + "/package.json", 'w') as file_fs:
+                        file_fs.write(json.dumps(json_content))
+                    file_fs.close()
+                # Using the cache system
+                # Must consider the fact package directories with same name
+                # can include different versions.
+                if PACKAGES_CACHE:
                     if "name" in json_content and "version" in json_content:
                         if is_package_cached(json_content["name"], json_content["version"]) == False:
                             set_cached_package(json_content["name"], json_content["version"])
@@ -92,10 +114,14 @@ def install_modules(package_directory, recursive=0):
                         else:
                             print(repeat_to_length("\t", recursive) + "> Cached " + package_directory)
                     else:
-                        print(repeat_to_length("\t", recursive) + "> Invalid " + package_directory)
+                        print(repeat_to_length("\t", recursive) + "> Invalid settings " + package_directory)
+                else:
+                    os.chdir(package_directory)
+                    os.system(PUBLISH_COMMAND)
+            else:
+                print(repeat_to_length("\t", recursive) + "> Invalid JSON " + package_directory)
         else:
-            os.chdir(package_directory)
-            os.system(PUBLISH_COMMAND)
+            print(repeat_to_length("\t", recursive) + "> Unreadable " + package_directory)
     else:
         # Some packages like @babel or @types may be
         # nested in subdirectories.

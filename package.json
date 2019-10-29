@@ -1,10 +1,10 @@
 {
-    "name":"example",
+    "name": "example",
     "version": "0.1",
     "description": "Example package.json file. In reality, the script will only get the 'dependencies' array.",
     "dependencies": {
         "bootstrap": "^4.3.1",
-        "json-loader": "^0.5.7",
+        "json-loader": "file:packages/cache/json-loader-0.5.7.tar",
         "react": "^16.11.0",
         "react-bootstrap": "^1.0.0-beta.14",
         "react-dom": "^16.11.0",
