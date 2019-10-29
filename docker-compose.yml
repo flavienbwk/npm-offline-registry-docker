@@ -9,7 +9,7 @@ services:
     volumes:
         - "./registry/storage:/verdaccio/storage"
         - "./registry/conf:/verdaccio/conf"
-        - "./registry/conf/.htpasswd:/verdaccio/conf/htpasswd"
+        - "./registry/conf/htpasswd:/verdaccio/conf/htpasswd"
         - "./registry/logo.png:/logo.png"
     networks:
       # "internet" to be accessible from the host
