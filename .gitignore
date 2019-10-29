@@ -1,6 +1,9 @@
+*.tar
+.npmignore
+package.json
+
 packages/*.tgz
 packages/*.log
 packages/.npmbundle
+
 test/
-.npmignore
-package.json
