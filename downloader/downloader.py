@@ -48,6 +48,6 @@ if not json_content["dependencies"]:
 dependencies = json_content["dependencies"]
 for dependency, version in dependencies.items():
     dep_version = dependency + "@" + version
-    command = "npm-bundle " + dep_version
+    command = "npm-bundle " + dep_version + " -f"
     print("> " + dep_version)
     run_command(command, 3600)
