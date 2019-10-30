@@ -3,6 +3,7 @@ version: "3"
 services:
   mirror:
     image: verdaccio/verdaccio:4.3.4
+    privileged: true
     restart: always
     ports:
       - "4873:4873"
