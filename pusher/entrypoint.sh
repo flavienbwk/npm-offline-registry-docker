@@ -1,8 +1,17 @@
 #!/bin/bash
 
-echo -e "ADDUSER"
-npm-cli-login -u default -p default -e default@example.com -r http://mirror:4873
 echo -e "SETREGISTRY"
 npm config set registry http://mirror:4873
+
+echo -e "ADDUSER"
+/usr/bin/expect <<EOD
+spawn npm adduser
+expect {
+  "Username:" {send "default\r"; exp_continue}
+  "Password:" {send "default\r"; exp_continue}
+  "Email: (this IS public)" {send "default@default.fr\r"; exp_continue}
+}
+EOD
+
 echo -e "SCRIPT"
 python3.7 /pusher.py
