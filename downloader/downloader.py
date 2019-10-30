@@ -16,6 +16,7 @@ def run_command(cmd, timeout_sec):
     try:
         timer.start()
         stdout, stderr = proc.communicate()
+        print(stdout, stderr)
     finally:
         timer.cancel()
 

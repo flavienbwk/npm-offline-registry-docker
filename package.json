@@ -11,15 +11,5 @@
         "react-router-dom": "^5.1.2",
         "react-scripts": "3.2.0",
         "styled-components": "^4.4.0"
-    },
-    "bundledDependencies": [
-        "bootstrap",
-        "json-loader",
-        "react",
-        "react-bootstrap",
-        "react-dom",
-        "react-router-dom",
-        "react-scripts",
-        "styled-components"
-    ]
+    }
 }
