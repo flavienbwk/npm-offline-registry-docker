@@ -13,7 +13,7 @@ jobs:
             chmod +x ~/docker-compose
             mv ~/docker-compose /usr/local/bin/docker-compose
       - setup_remote_docker
-      - run: docker-compose up --build mirror
+      - run: docker-compose build
 
   test:
     docker:
@@ -26,8 +26,10 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             mv ~/docker-compose /usr/local/bin/docker-compose
-      - run: setup_remote_docker
+      - setup_remote_docker
+      - run: docker-compose up -d mirror
       - run: docker-compose up download
+      - run: docker-compose up push
 
 workflows:
   version: 2
