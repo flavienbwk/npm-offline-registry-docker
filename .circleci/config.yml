@@ -14,7 +14,7 @@ jobs:
       - run: apk add --no-cache curl
       - run: curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       - run: chmod +x /usr/local/bin/docker-compose
-      - run: docker-compose up --build mirror
+      - run: /usr/local/bin/docker-compose up --build mirror
 
   test:
     docker:
@@ -24,7 +24,7 @@ jobs:
       - run: apk add --no-cache curl
       - run: curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       - run: chmod +x /usr/local/bin/docker-compose
-      - run: docker-compose up download
+      - run: /usr/local/bin/docker-compose up --build mirror
 
 workflows:
   version: 2
