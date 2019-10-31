@@ -1,6 +1,12 @@
-# NPM Offline Registry Mirror
+# NPM Offline Registry
 
-Dockerized Yarn / NPM / PNPM offline registry to host your dependencies.
+<p align="center">
+<img src="https://travis-ci.org/flavienbwk/npm-yarn-offline-mirror-docker.svg?branch=master"/>
+</p>
+
+Dockerized Yarn / NPM / PNPM offline registry to host your own dependencies online or offline.
+
+This repository contains tools that will allow you to download dependencies you need **online** and push them **offline**.
 
 ## Getting started
 
