@@ -15,7 +15,7 @@ before_script:
   - docker-compose up -d --build
 
 script:
-  - chmod -R +x .
+  - chmod -R 775 .
   - docker-compose up -d mirror
   - docker-compose up download
   - docker-compose up push
