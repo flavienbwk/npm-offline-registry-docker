@@ -1,9 +1,5 @@
 version: 2
 
-before_script:
-  - curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-  - chmod +x /usr/local/bin/docker-compose
-
 jobs:
 
   build:
@@ -11,10 +7,13 @@ jobs:
       - image: docker:dind
     steps:
       - checkout
-      - run: apk add --no-cache curl
+      - run: apk update
+      - run: apk upgrade
+      - run: apk add python python-dev py-pip build-base
       - run: curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       - run: chmod +x /usr/local/bin/docker-compose
-      - run: /usr/local/bin/docker-compose up --build mirror
+      - run: pip install docker-compose
+      - run: docker-compose up --build mirror
 
   test:
     docker:
@@ -24,7 +23,7 @@ jobs:
       - run: apk add --no-cache curl
       - run: curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       - run: chmod +x /usr/local/bin/docker-compose
-      - run: /usr/local/bin/docker-compose up --build mirror
+      - run: docker-compose up download
 
 workflows:
   version: 2
