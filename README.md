@@ -1,13 +1,23 @@
-# YARN / NPM Offline Registry Mirror
+# NPM Offline Registry
 
-Dockerized Yarn / NPM / PNPM offline mirror / registry to host your dependencies.
+<p align="center">
+<img src="https://travis-ci.org/flavienbwk/npm-yarn-offline-mirror-docker.svg?branch=master"/>
+</p>
+
+Dockerized Yarn / NPM / PNPM offline registry to host your own dependencies online or offline.
+
+This repository contains tools that will allow you to download dependencies you need **online** and push them **offline**.
 
 ## Getting started
 
 ### Setting up credentials for registry (offline :electric_plug:)
 
-In order for you to be able to **push** packages on the registry, you need to create a user account.  
-The default credentials are : username `default` and password `default`.
+In order for you to be able to **push** packages to the registry, you need to create a user account.  
+
+The default credentials are : 
+
+- Username `default`
+- Password `default`
 
 Credentials are stored in `registry/conf/htpasswd`
 
@@ -16,17 +26,17 @@ To add a user :
 ```
 apt install apache2-utils -y
 htpasswd ./registry/conf/htpasswd myuser
-docker-compose restart mirror
+docker-compose restart registry
 ```
 
-To remove a user, just remove its line in `registry/conf/htpasswd` and restart the `mirror` container
+To remove a user, just remove its line in `registry/conf/htpasswd` and restart the `registry` container
 
 ### Starting the registry !
 
 Just execute :
 
 ```
-docker-compose up -d mirror
+docker-compose up -d registry
 ```
 
 ### Downloading your dependencies (online :zap:)
