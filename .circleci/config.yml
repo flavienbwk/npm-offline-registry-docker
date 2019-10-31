@@ -11,8 +11,7 @@ jobs:
       - image: docker:dind
     steps:
       - checkout
-      - run: pwd
-      - run: ls -l
+      - run: apt-get install curl -y
       - run: curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
       - run: chmod +x /usr/local/bin/docker-compose
       - run: docker-compose up --build mirror
@@ -22,6 +21,9 @@ jobs:
       - image: docker:dind
     steps:
       - checkout
+      - run: apt-get install curl -y
+      - run: curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+      - run: chmod +x /usr/local/bin/docker-compose
       - run: docker-compose up download
 
 workflows:
