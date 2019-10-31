@@ -1,21 +1,32 @@
 version: 2
 
 jobs:
-
   build:
     docker:
       - image: jonaskello/docker-and-compose
     steps:
       - checkout
-      - run: dockerd
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run: setup_remote_docker
       - run: docker-compose up --build mirror
- 
+
   test:
     docker:
       - image: jonaskello/docker-and-compose
     steps:
       - checkout
-      - run: dockerd
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run: setup_remote_docker
       - run: docker-compose up download
 
 workflows:
