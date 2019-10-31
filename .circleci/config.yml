@@ -7,6 +7,7 @@ jobs:
       - image: jonaskello/docker-and-compose
     steps:
       - checkout
+      - run: service docker start
       - run: docker-compose up --build mirror
  
   test:
@@ -14,6 +15,7 @@ jobs:
       - image: jonaskello/docker-and-compose
     steps:
       - checkout
+      - run: service docker start
       - run: docker-compose up download
 
 workflows:
