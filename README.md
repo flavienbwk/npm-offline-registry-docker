@@ -51,6 +51,42 @@ Then, just run :
 docker-compose up --build download
 ```
 
+#### Manually bundle a module
+
+You can sometimes get this error :
+
+```stderr
+npm ERR! code ENOLOCAL\nnpm ERR! Could not install from "@<YOUR_MODULE>" as it does not contain a package.json file.\n\nnpm ERR! A complete log of this run can be found in: [...]
+```
+
+In this case, let's say you want to bundle `@trendmicro/react-sidenav==0.5.0` :
+
+1. Find the GitHub repository of this bundle and clone it :
+
+    ```bash
+    git clone https://github.com/trendmicro-frontend/react-sidenav
+    ```
+
+2. Install submodules :
+
+    ```bash
+    cd react-sidenav
+    npm install && cd ..
+    ```
+
+3. Tar(gz) it in a `package` directory :
+
+    ```bash
+    mkdir package
+    mv react-sidenav/* package/
+    tar cvzf react-sidenav.tgz ./package
+
+    rm -r package
+    rm -r react-sidenav
+    ```
+
+4. Your module is ready to be pushed !
+
 ### Pushing your dependencies to your local registry (offline :electric_plug:)
 
 This script will look into the `/packages` directory for `.tgz` package files downloaded from the _downloader_ script or from the archives you've added.

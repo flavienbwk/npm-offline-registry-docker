@@ -16,9 +16,9 @@ def run_command(cmd, timeout_sec):
     try:
         timer.start()
         stdout, stderr = proc.communicate()
-        print(stdout, stderr)
     finally:
         timer.cancel()
+    return (stdout, stderr)
 
 if not path.exists(download_path) or not os.path.isdir(download_path):
     print("Download path '" + download_path + "' was not found or is not a directory")
@@ -51,4 +51,32 @@ for dependency, version in dependencies.items():
     dep_version = dependency + "@" + version
     command = "npm-bundle " + dep_version + " -f"
     print("> " + dep_version)
-    run_command(command, 3600)
+
+    npm_bundle_success = False
+    print("     > Trying to npm-bundle")
+    (stdout, stderr) = run_command(command, 3600)
+    if len(str(stderr)) == 0:
+        print("OUT: " + str(stdout))
+        npm_bundle_success = True
+    else:
+        print("ERR: " + str(stderr))
+
+    if npm_bundle_success is False:
+        # Depth 1 module failover
+        dep_version_equal = dependency + "==" + version
+        print("     > Trying to npm-bundle manually")
+        command = "npm install " + dep_version_equal
+        (stdout, stderr) = run_command(command, 3600)
+        if len(str(stderr)) == 0:
+            print("OUT: " + str(stdout))
+            module_path = "{}/node_modules/{}".format(download_path, dependency)
+            if os.path.exists(module_path):
+                os.chdir(module_path)
+                run_command("npm install", 3600)
+                os.chdir(download_path)
+                run_command("tar cvzf {}.tgz {}".format(dependency, module_path), 3600)
+            else:
+                # TODO(flavienbwk) : Add git clone + npm install functionality to pack the module
+                print("     > {} does not exist".format(module_path))
+        else:
+            print("ERR: " + str(stderr))
