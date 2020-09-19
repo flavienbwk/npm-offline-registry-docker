@@ -1,6 +1,7 @@
 #!/usr/bin/env/python3.7
 
 import json
+import shutil
 import os
 from os import path
 import shlex
@@ -11,6 +12,7 @@ file_path = "/package.json"
 download_path = "/packages"
 
 def run_command(cmd, timeout_sec):
+    print("Running command : " + cmd)
     proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
     timer = Timer(timeout_sec, proc.kill)
     try:
@@ -55,20 +57,25 @@ for dependency, version in dependencies.items():
     npm_bundle_success = False
     print("     > Trying to npm-bundle")
     (stdout, stderr) = run_command(command, 3600)
-    if len(str(stderr)) == 0:
-        print("OUT: " + str(stdout))
+    print(stderr.decode("utf-8"))
+    stderr_str = stderr.decode("utf-8")
+    stdout_str = stdout.decode("utf-8")
+    if len(stderr_str) == 0:
+        print("OUT: " + stdout_str)
         npm_bundle_success = True
     else:
-        print("ERR: " + str(stderr))
+        print("ERR: " + stderr_str)
 
     if npm_bundle_success is False:
         # Depth 1 module failover
-        dep_version_equal = dependency + "==" + version
         print("     > Trying to npm-bundle manually")
-        command = "npm install " + dep_version_equal
+        dep_version_equal = dependency + "@" + version
+        command = "npm install --save " + dep_version_equal
         (stdout, stderr) = run_command(command, 3600)
-        if len(str(stderr)) == 0:
-            print("OUT: " + str(stdout))
+        stderr_str = stderr.decode("utf-8")
+        stdout_str = stdout.decode("utf-8")
+        if len(stderr_str) == 0:
+            print("OUT: " + stdout_str)
             module_path = "{}/node_modules/{}".format(download_path, dependency)
             if os.path.exists(module_path):
                 os.chdir(module_path)
@@ -79,4 +86,7 @@ for dependency, version in dependencies.items():
                 # TODO(flavienbwk) : Add git clone + npm install functionality to pack the module
                 print("     > {} does not exist".format(module_path))
         else:
-            print("ERR: " + str(stderr))
+            print("ERR: " + stderr_str)
+            shutil.rmtree("/packages/node_modules")
+            os.remove("/packages/package-lock.json")
+            print("PLEASE SEE THE \"Manually bundle a module\" PART OF THE README !")

@@ -11,7 +11,7 @@ import requests
 START_TIME = time.time()
 DOWNLOAD_PATH = "/packages"
 UNTAR_PATH = "/untared-packages"
-REGISTRY_URL = "http://mirror:4873"
+REGISTRY_URL = "http://registry:4873"
 PUBLISH_COMMAND = "npm publish --registry " + REGISTRY_URL
 PACKAGES_CACHE = True
 PACKAGES = {}
@@ -35,7 +35,7 @@ def mkdir_p(path):
 
 # Will parse the Verdaccio's API to find
 # already pushed packages.
-def generate_cache_from_mirror():
+def generate_cache_from_registry():
     headers = {'Content-Type': 'application/json'}
     try:
         response = requests.get(REGISTRY_URL + '/-/verdaccio/packages', headers=headers)
@@ -101,27 +101,28 @@ def install_modules(package_directory, recursive=0):
                     with open(package_directory + "/package.json", 'w') as file_fs:
                         file_fs.write(json.dumps(json_content))
                     file_fs.close()
-                # Using the cache system
-                # Must consider the fact package directories with same name
-                # can include different versions.
+                # Using the cache system.
+                # The program must consider the fact that package directories with 
+                # the same name can include different versions.
                 if PACKAGES_CACHE:
                     if "name" in json_content and "version" in json_content:
                         if is_package_cached(json_content["name"], json_content["version"]) == False:
                             set_cached_package(json_content["name"], json_content["version"])
-                            print(repeat_to_length("\t", recursive) + "> Pushing " + package_directory)
+                            print(repeat_to_length("\t", recursive) + "> Pushing " + package_directory, flush=True)
                             os.chdir(package_directory)
+                            print(package_directory, flush=True)
                             os.system(PUBLISH_COMMAND)
                         else:
-                            print(repeat_to_length("\t", recursive) + "> Cached " + package_directory)
+                            print(repeat_to_length("\t", recursive) + "> Cached " + package_directory, flush=True)
                     else:
-                        print(repeat_to_length("\t", recursive) + "> Invalid settings " + package_directory)
+                        print(repeat_to_length("\t", recursive) + "> Invalid settings " + package_directory, flush=True)
                 else:
                     os.chdir(package_directory)
                     os.system(PUBLISH_COMMAND)
             else:
-                print(repeat_to_length("\t", recursive) + "> Invalid JSON " + package_directory)
+                print(repeat_to_length("\t", recursive) + "> Invalid JSON " + package_directory, flush=True)
         else:
-            print(repeat_to_length("\t", recursive) + "> Unreadable " + package_directory)
+            print(repeat_to_length("\t", recursive) + "> Unreadable " + package_directory, flush=True)
     else:
         # Some packages like @babel or @types may be
         # nested in subdirectories.
@@ -132,9 +133,9 @@ def install_modules(package_directory, recursive=0):
     return
 
 if PACKAGES_CACHE:
-    cached = generate_cache_from_mirror()
+    cached = generate_cache_from_registry()
     if not cached:
-        print("Failed to cache from mirror API.")
+        print("Failed to cache from registry API.")
     else:
         print("Using cache : yes !")
 

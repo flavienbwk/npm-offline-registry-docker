@@ -1,17 +1,21 @@
-version: "3"
+version: "3.2"
 
 services:
   registry:
-    image: verdaccio/verdaccio:4.3.4
     privileged: true
+    image: verdaccio/verdaccio:4.8.1
     restart: always
     ports:
       - "4873:4873"
     volumes:
-        - "./registry/storage:/verdaccio/storage"
-        - "./registry/conf:/verdaccio/conf"
-        - "./registry/conf/htpasswd:/verdaccio/conf/htpasswd"
-        - "./registry/logo.png:/logo.png"
+      - "registry_storage:/verdaccio/storage"
+      - "./registry/conf:/verdaccio/conf"
+      - type: bind
+        source: ./registry/conf/htpasswd
+        target: /verdaccio/conf/htpasswd
+      - type: bind
+        source: ./registry/logo.png
+        target: /logo.png
     networks:
       # "internet" to be accessible from the host
       # but host can have no internet access.
@@ -30,8 +34,6 @@ services:
       noinet: {}
 
   download:
-    depends_on:
-      - registry
     build:
       context: ./downloader
     volumes:
@@ -60,3 +62,6 @@ networks:
     driver: bridge
   noinet:
     internal: true
+
+volumes:
+  registry_storage:
