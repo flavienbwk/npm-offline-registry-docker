@@ -85,7 +85,7 @@ In this case, let's say you want to bundle `@trendmicro/react-sidenav==0.5.0` :
     ```bash
     mkdir package
     mv react-sidenav/* package/
-    tar cvzf react-sidenav.tgz ./package
+    tar cvzf react-sidenav.tgz ./package/
 
     rm -r package
     rm -r react-sidenav
