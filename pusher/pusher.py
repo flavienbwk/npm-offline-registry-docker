@@ -90,7 +90,11 @@ def install_modules(package_directory, recursive=0):
             for module_dir in os.listdir(package_directory + "/node_modules"):
                 module_path = package_directory + "/node_modules/" + module_dir
                 print(repeat_to_length("\t", recursive + 1) + "> FOUND " + module_dir)
-                install_modules(module_path, recursive + 1)
+                try:
+                    install_modules(module_path, recursive + 1)
+                except Exception as e:
+                    print(e)
+                    print(f"Probably not a directory : {module_path}")
         with open(package_directory + "/package.json", 'r') as file_content:
             content = file_content.read()
         file_content.close()
