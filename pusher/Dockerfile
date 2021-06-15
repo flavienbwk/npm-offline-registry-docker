@@ -10,7 +10,8 @@ RUN pip install requests
 
 COPY ./npm-6.14.8.tgz /npm-6.14.8.tgz
 RUN npm install -g /npm-6.14.8.tgz --production
-RUN npm install -g npm-offline-packager@1.3.0
+COPY ./npm-offline-packager-1.3.0.tgz /npm-offline-packager-1.3.0.tgz
+RUN npm install -g ./npm-offline-packager-1.3.0.tgz
 
 COPY ./entrypoint.sh /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
