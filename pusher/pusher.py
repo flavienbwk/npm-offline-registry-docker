@@ -10,11 +10,6 @@ from threading import Timer
 
 START_TIME = time.time()
 DOWNLOAD_PATH = "/packages"
-UNTAR_PATH = "/untared-packages"
-REGISTRY_URL = "http://registry:4873"
-PUBLISH_COMMAND = "npm publish --registry " + REGISTRY_URL
-PACKAGES_CACHE = True
-PACKAGES = {}
 
 
 def run_command(cmd, timeout_sec=3600):
@@ -24,6 +19,7 @@ def run_command(cmd, timeout_sec=3600):
     try:
         timer.start()
         stdout, stderr = proc.communicate()
+        print(stdout, stderr, flush=True)
     finally:
         timer.cancel()
     return (stdout, stderr)
@@ -41,6 +37,5 @@ if len(files) <= 0:
 
 for archive in files:
     (stdout, stderr) = run_command(f"npo publish -s '{archive}'")
-    print(stdout, stderr, flush=True)
 
 print("\n--- Executed in %s seconds ---" % (time.time() - START_TIME))
