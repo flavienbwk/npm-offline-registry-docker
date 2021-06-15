@@ -59,7 +59,7 @@ docker-compose up --build download
 
 ### Pushing your dependencies to your local registry (offline :electric_plug:)
 
-This script will look into the `/packages` directory for `.tgz` package files downloaded from the _downloader_ script or from the archives you've added.
+This script will look into the `/packages` directory for `.tar` package files downloaded from the _downloader_ script or from the archives you've added.
 
 Just run :
 
