@@ -1,13 +1,13 @@
 #!/bin/bash
 
-echo -e "Setting up registry..."
-npm config set registry http://registry:4873
+echo -e "Setting up registry $REGISTRY_ENDPOINT..."
+npm config set registry $REGISTRY_ENDPOINT
 
 echo -e "Logging in..."
 for run in {1..2}
 do
 /usr/bin/expect <<EOD
-spawn npm adduser --registry http://registry:4873
+spawn npm adduser
 expect {
   "Username:" {send "default\r"; exp_continue}
   "Password:" {send "default\r"; exp_continue}

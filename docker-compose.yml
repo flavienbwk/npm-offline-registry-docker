@@ -45,8 +45,8 @@ services:
       internet: {}
 
   push:
-    depends_on:
-      - registry
+    environment:
+      REGISTRY_ENDPOINT: http://registry:4873
     build:
       context: ./pusher
     volumes:
