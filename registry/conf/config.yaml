@@ -12,6 +12,7 @@
 
 # path to a directory with all packages
 storage: /verdaccio/storage
+plugins: /verdaccio/plugins
 
 publish:
   allow_offline: true
@@ -62,7 +63,7 @@ packages:
     # you can specify usernames/groupnames (depending on your auth plugin)
     # and three keywords: "$all", "$anonymous", "$authenticated"
     access: $all
-    publish: "$authenticated"
+    publish: $authenticated
 
 # To use `npm audit` uncomment the following section
 middlewares:

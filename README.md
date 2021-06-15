@@ -14,16 +14,16 @@ This repository contains tools that will allow you to download dependencies you 
 
 In order for you to be able to **push** packages to the registry, you need to create a user account.  
 
-The default credentials are : 
+The default credentials are :
 
 - Username `default`
 - Password `default`
 
 Credentials are stored in `registry/conf/htpasswd`
 
-To add a user :
+Optionally, you may want to add a user :
 
-```
+```console
 apt install apache2-utils -y
 htpasswd ./registry/conf/htpasswd myuser
 docker-compose restart registry
@@ -31,11 +31,17 @@ docker-compose restart registry
 
 To remove a user, just remove its line in `registry/conf/htpasswd` and restart the `registry` container
 
-### Starting the registry !
+If you want to use a _bind mount_ for storing registry data, please do the following (useful if you want to backup your registry data) :
+
+1. Edit the `docker-compose.yml` file and replace `"registry_storage:/verdaccio/storage"` by `"./registry/storage:/verdaccio/storage"`
+2. Run `mkdir ./registry/storage`
+3. Run `sudo chown 101:101 ./registry/storage` (see [verdaccio/verdaccio#336](https://github.com/verdaccio/verdaccio/issues/336))
+
+### Starting the registry
 
 Just execute :
 
-```
+```console
 docker-compose up -d registry
 ```
 
@@ -43,49 +49,13 @@ docker-compose up -d registry
 
 You just have to **place the `/package.json` of the project** you want to get the packages from, **at the root of the directory**.
 
-The script that downloads the packages downloads as well the dependencies of each package (and their dependencies... and so on).
+The script that downloads the packages also downloads the dependencies of each package (and their dependencies... and so on).
 
 Then, just run :
 
-```
+```console
 docker-compose up --build download
 ```
-
-#### Manually bundle a module
-
-You can sometimes get this error :
-
-```stderr
-npm ERR! code ENOLOCAL\nnpm ERR! Could not install from "@<YOUR_MODULE>" as it does not contain a package.json file.\n\nnpm ERR! A complete log of this run can be found in: [...]
-```
-
-In this case, let's say you want to bundle `@trendmicro/react-sidenav==0.5.0` :
-
-1. Find the GitHub repository of this bundle and clone it :
-
-    ```bash
-    git clone https://github.com/trendmicro-frontend/react-sidenav
-    ```
-
-2. Install submodules :
-
-    ```bash
-    cd react-sidenav
-    npm install && cd ..
-    ```
-
-3. Tar(gz) it in a `package` directory :
-
-    ```bash
-    mkdir package
-    mv react-sidenav/* package/
-    tar cvzf react-sidenav.tgz ./package
-
-    rm -r package
-    rm -r react-sidenav
-    ```
-
-4. Your module is ready to be pushed !
 
 ### Pushing your dependencies to your local registry (offline :electric_plug:)
 
@@ -93,7 +63,7 @@ This script will look into the `/packages` directory for `.tgz` package files do
 
 Just run :
 
-```
+```console
 docker-compose up --build push
 ```
 
@@ -105,7 +75,7 @@ You can choose which package(s) to `yarn add` inside `/tester/entrypoint.sh`.
 
 Then, just run :
 
-```
+```console
 docker-compose up --build test
 ```
 
