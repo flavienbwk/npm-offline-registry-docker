@@ -1,7 +1,7 @@
 # NPM Offline Registry
 
 <p align="center">
-<img src="https://travis-ci.org/flavienbwk/npm-offline-registry-docker.svg?branch=master"/>
+<img src="https://travis-ci.com/flavienbwk/npm-offline-registry-docker.svg?branch=master"/>
 </p>
 
 Dockerized Yarn / NPM / PNPM offline registry to host your own dependencies online or offline.
