@@ -82,7 +82,10 @@ def set_offline_settings(json_content):
     if "publishConfig" in json_content and "registry" in json_content["publishConfig"]:
         modified = True
         json_content["publishConfig"].pop("registry", None)
-    return modified
+    if "deprecated" in json_content and json_content["deprecated"] != "false":
+        modified = True
+        json_content["deprecated"] = "false"
+    return modified, json_content
 
 
 def install_modules(package_directory, recursive=0):
@@ -98,7 +101,8 @@ def install_modules(package_directory, recursive=0):
         if content:
             json_content = json.loads(content)
             if json_content:
-                if set_offline_settings(json_content):
+                json_modified, json_content = set_offline_settings(json_content)
+                if json_modified:
                     with open(package_directory + "/package.json", "w") as file_fs:
                         file_fs.write(json.dumps(json_content))
                     file_fs.close()
