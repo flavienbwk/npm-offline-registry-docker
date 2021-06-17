@@ -84,7 +84,7 @@ def set_offline_settings(json_content):
         json_content["publishConfig"].pop("registry", None)
     if "deprecated" in json_content and json_content["deprecated"] != "false":
         modified = True
-        json_content["deprecated"] = "false"
+        del json_content["deprecated"]
     return modified, json_content
 
 
