@@ -49,7 +49,7 @@ if not json_content["dependencies"]:
     exit(1)
 
 # Use npm-offline-registry
-command = f"npo fetch --no-cache -p '{file_path}'"
+command = f"npo fetch --no-cache --peer -p '{file_path}'"
 (stdout, _) = run_command(command)
 
 # Catching `.tar` generated
